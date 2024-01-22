@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\DirectionResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DirectionResource\RelationManagers;
+use App\Filament\Resources\DirectionResource\RelationManagers\DepartementsRelationManager;
 
 class DirectionResource extends Resource
 {
@@ -88,6 +89,7 @@ class DirectionResource extends Resource
     {
         return [
             //
+            DepartementsRelationManager::class,
         ];
     }
 

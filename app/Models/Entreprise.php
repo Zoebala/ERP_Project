@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Direction;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Entreprise extends Model
 {
@@ -11,4 +12,9 @@ class Entreprise extends Model
     protected $fillable=[
         "lib"
     ];
+
+    public function directions()
+    {
+        return $this->hasMany(Direction::class);
+    }
 }
