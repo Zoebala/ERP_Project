@@ -5,14 +5,20 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Employe;
+use Filament\Forms\Get;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\EmployeResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\EmployeResource\RelationManagers;
 
 class EmployeResource extends Resource
@@ -34,19 +40,30 @@ class EmployeResource extends Resource
 
                     TextInput::make('nom')
                         ->required()
+                        ->live()
                         ->maxLength(255),
                     TextInput::make('postnom')
                         ->required()
+                        ->live()
+                        ->hidden(fn(Get $get):bool => !filled($get("nom")))
                         ->maxLength(255),
-                    TextInput::make('genre')
+                    Select::make('genre')
+                        ->live()
+                        ->options([
+                            "F"=>"F",
+                            "M"=>"M"
+                        ])
                         ->required()
-                        ->maxLength(1),
+                        ->hidden(fn(Get $get):bool => !filled($get("postnom"))),
                     DatePicker::make('datenais')
+                        ->hidden(fn(Get $get):bool => !filled($get("genre")))
                         ->required(),
                 ])->columnSpan(2),
                 Section::make("Votre Profil")
+                ->icon("heroicon-o-camera")
+                ->description("Uploader votre profil ici!")
                 ->schema([
-
+                    SpatieMediaLibraryFileUpload::make("photo"),
                 ])->columnSpan(1),
             ])->columns(3);
     }
@@ -55,20 +72,21 @@ class EmployeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nom')
+                TextColumn::make('nom')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('postnom')
+                TextColumn::make('postnom')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('genre')
+                TextColumn::make('genre')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('datenais')
+                TextColumn::make('datenais')
                     ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                SpatieMediaLibraryImageColumn::make('photo'),
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
