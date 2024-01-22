@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->datetime("arrivee")->nullable();
             $table->datetime("depart")->nullable();
-            $table->foreignId("employe_id")->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger("employe_id");
             $table->timestamps();
         });
     }

@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Entreprise extends Model
 {
     use HasFactory;
+    protected $fillable=[
+        "lib"
+    ];
 }

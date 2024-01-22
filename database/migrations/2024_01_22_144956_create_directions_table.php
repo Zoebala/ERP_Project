@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('directions', function (Blueprint $table) {
             $table->id();
             $table->string("lib");
-            $table->foreignId("entreprise_id")->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger("entreprise_id");
             $table->timestamps();
         });
     }

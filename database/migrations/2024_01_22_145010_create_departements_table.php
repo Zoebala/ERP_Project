@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('departements', function (Blueprint $table) {
             $table->id();
             $table->string("lib");
-            $table->foreignId("direction_id")->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger("direction_id");
             $table->timestamps();
         });
     }

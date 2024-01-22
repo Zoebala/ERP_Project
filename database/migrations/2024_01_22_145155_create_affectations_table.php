@@ -6,15 +6,15 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
+/**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('affectations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("employe_id")->constrained()->cascadeOnDelete();
-            $table->foreignId("poste_id")->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger("employe_id");
+            $table->unsignedBigInteger("poste_id");
             $table->datetime("debut")->nullable();
             $table->datetime("fin")->nullable();
             $table->timestamps();

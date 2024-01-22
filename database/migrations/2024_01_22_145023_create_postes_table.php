@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('postes', function (Blueprint $table) {
             $table->id();
             $table->string("lib");
-            $table->foreignId("Departement_id")->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger("departement_id");
             $table->timestamps();
         });
     }
