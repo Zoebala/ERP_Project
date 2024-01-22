@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\PosteResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Tables;
-use App\Models\Employe;
 use Filament\Forms\Get;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
@@ -17,28 +15,20 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\EmployeResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use App\Filament\Resources\EmployeResource\RelationManagers;
-// use App\Filament\Resources\EmployeResource\RelationManagers\PostesRelationManager;
+use Filament\Resources\RelationManagers\RelationManager;
 
-class EmployeResource extends Resource
+class EmployesRelationManager extends RelationManager
 {
-    protected static ?string $model = Employe::class;
+    protected static string $relationship = 'employes';
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationGroup ="Entreprise Management";
-    protected static ?int $navigationSort = 5;
-
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make("Nouvel Employé ?")
-                ->description("Ajouter un nouvel employé ici!")
-                ->icon('heroicon-o-user-plus')
+                Section::make("Modifier Employé ?")
+                ->description("Modifier l'employé ici!")
+                ->icon('heroicon-o-user')
                 ->schema([
 
                     TextInput::make('nom')
@@ -72,9 +62,10 @@ class EmployeResource extends Resource
             ])->columns(3);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('nom')
             ->columns([
                 ImageColumn::make("photo"),
                 TextColumn::make('nom')
@@ -90,44 +81,21 @@ class EmployeResource extends Resource
                     ->label("DateNaissance")
                     // ->format()
                     ->sortable(),
-                // SpatieMediaLibraryImageColumn::make('photo'),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
             ])
+            ->headerActions([
+                Tables\Actions\AttachAction::make(),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-            RelationManagers\PostesRelationManager::class,
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListEmployes::route('/'),
-            'create' => Pages\CreateEmploye::route('/create'),
-            'edit' => Pages\EditEmploye::route('/{record}/edit'),
-        ];
     }
 }

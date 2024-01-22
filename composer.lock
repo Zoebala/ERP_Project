@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "81b82acaee3c7bfbdd6947aaa635db3b",
+    "content-hash": "8cae3559effff3fc5d2d208f7b2a6012",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -1445,16 +1445,16 @@
         },
         {
             "name": "filament/spatie-laravel-media-library-plugin",
-            "version": "v3.2.10",
+            "version": "v3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/spatie-laravel-media-library-plugin.git",
-                "reference": "6624dd542ce9f5f15df6aa4edb4bbf2979a627a0"
+                "reference": "5b3eb2b086fff9b4c6a86e9b2cf22b9f7d337455"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/spatie-laravel-media-library-plugin/zipball/6624dd542ce9f5f15df6aa4edb4bbf2979a627a0",
-                "reference": "6624dd542ce9f5f15df6aa4edb4bbf2979a627a0",
+                "url": "https://api.github.com/repos/filamentphp/spatie-laravel-media-library-plugin/zipball/5b3eb2b086fff9b4c6a86e9b2cf22b9f7d337455",
+                "reference": "5b3eb2b086fff9b4c6a86e9b2cf22b9f7d337455",
                 "shasum": ""
             },
             "require": {
@@ -1478,7 +1478,7 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2024-01-18T11:11:50+00:00"
+            "time": "2024-01-15T12:25:09+00:00"
         },
         {
             "name": "filament/support",

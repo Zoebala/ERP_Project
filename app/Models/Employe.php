@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Poste;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -17,6 +18,12 @@ class Employe extends Model implements HasMedia
         "nom",
         "postnom",
         "datenais",
-        "genre"
+        "genre",
+        "photo"
     ];
+
+    public function postes()
+    {
+        return $this->belongsToMany(Poste::class,"affectations")->withTimestamps();
+    }
 }

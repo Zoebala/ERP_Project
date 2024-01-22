@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\PosteResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PosteResource\RelationManagers;
+// use App\Filament\Resources\PosteResource\RelationManagers\EmployesRelationManager;
 
 class PosteResource extends Resource
 {
@@ -29,8 +30,8 @@ class PosteResource extends Resource
     {
         return $form
             ->schema([
-                Section::make("Nouveau Departement ?")
-                ->description("Ajouter un nouveau departement ici!")
+                Section::make("Nouveau Poste ?")
+                ->description("Ajouter un nouveau poste ici!")
                 ->aside()
                 ->icon("heroicon-o-book-open")
                 ->schema([
@@ -38,6 +39,7 @@ class PosteResource extends Resource
                     Select::make('departement_id')
                         ->relationship("Departement","lib")
                         ->label("Departement")
+                        ->preload()
                         ->required(),
                     TextInput::make('lib')
                         ->label("Poste")
@@ -86,6 +88,7 @@ class PosteResource extends Resource
     {
         return [
             //
+            RelationManagers\EmployesRelationManager::class,
         ];
     }
 

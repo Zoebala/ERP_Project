@@ -37,7 +37,6 @@ class EntrepriseResource extends Resource
                     TextInput::make("lib")
                     ->label("Dénomination")
                     ->required()
-                    ->exists()
                     ->placeholder("Ex: Systematik")
                 ]),
             ]);

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string("postnom");
             $table->char("genre",1);
             $table->date("datenais");
+            $table->text("photo")->nullable();
             $table->timestamps();
         });
     }

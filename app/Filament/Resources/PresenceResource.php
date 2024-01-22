@@ -2,16 +2,21 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PresenceResource\Pages;
-use App\Filament\Resources\PresenceResource\RelationManagers;
-use App\Models\Presence;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Presence;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\DateTimePicker;
+use App\Filament\Resources\PresenceResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\PresenceResource\RelationManagers;
 
 class PresenceResource extends Resource
 {
@@ -25,11 +30,19 @@ class PresenceResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('employe_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\DateTimePicker::make('arrivee'),
-                Forms\Components\DateTimePicker::make('depart'),
+                Section::make("Présence")
+                ->aside()
+                ->icon("heroicon-o-calendar-days")
+                ->description("Signaler votre présence ici!")
+                ->schema([
+                    Select::make('employe_id')
+                        ->relationship("employe","nom")
+                        ->preload()
+                        ->searchable()
+                        ->required(),
+                    DateTimePicker::make('arrivee'),
+                    DateTimePicker::make('depart'),
+                ]),
             ]);
     }
 
@@ -37,20 +50,22 @@ class PresenceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('employe_id')
-                    ->numeric()
+                TextColumn::make('employe.nom')
+                    ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('arrivee')
+                TextColumn::make('arrivee')
+                    ->label("Heure Arrivée")
+                    ->dateTime("d/m/Y h:i:s")
+                    ->sortable(),
+                TextColumn::make('depart')
+                    ->label("Heure Depart")
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('depart')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -60,6 +75,7 @@ class PresenceResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
