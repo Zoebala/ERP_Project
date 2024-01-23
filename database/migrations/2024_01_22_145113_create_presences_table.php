@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('presences', function (Blueprint $table) {
             $table->id();
+            $table->boolean("BtnArrivee")->default(0);
             $table->datetime("arrivee")->nullable();
+            $table->boolean("BtnDepart")->default(0);
             $table->datetime("depart")->nullable();
             $table->unsignedBigInteger("employe_id");
             $table->timestamps();

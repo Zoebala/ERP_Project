@@ -9,6 +9,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
@@ -16,6 +17,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\EmployeResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -102,6 +104,7 @@ class EmployeResource extends Resource
             ])
             ->filters([
                 //
+             
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -130,4 +133,6 @@ class EmployeResource extends Resource
             'edit' => Pages\EditEmploye::route('/{record}/edit'),
         ];
     }
+     
+   
 }

@@ -12,11 +12,14 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\ToggleColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DateTimePicker;
 use App\Filament\Resources\PresenceResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PresenceResource\RelationManagers;
+use Filament\Resources\Components\Tab;
+// use Illuminate\Database\Eloquent\Builder;
 
 class PresenceResource extends Resource
 {
@@ -53,12 +56,14 @@ class PresenceResource extends Resource
                 TextColumn::make('employe.nom')
                     ->searchable()
                     ->sortable(),
+                ToggleColumn::make('BtnArrivee'),
                 TextColumn::make('arrivee')
                     ->label("Heure Arrivée")
                     ->dateTime("d/m/Y h:i:s")
                     ->sortable(),
+                ToggleColumn::make('BtnDepart'),
                 TextColumn::make('depart')
-                    ->label("Heure Depart")
+                ->label("Heure Depart")
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('created_at')
@@ -72,6 +77,7 @@ class PresenceResource extends Resource
             ])
             ->filters([
                 //
+                
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -83,6 +89,8 @@ class PresenceResource extends Resource
                 ]),
             ]);
     }
+
+ 
 
     public static function getRelations(): array
     {
