@@ -25,6 +25,14 @@ class EntrepriseResource extends Resource
     protected static ?string $navigationGroup ="Entreprise Management";
     protected static ?int $navigationSort = 1;
 
+    public static function getNavigationBadge():string
+    {
+        return static::getModel()::count();
+    }
+    public static function getNavigationBadgecolor():string|array|null
+    {
+        return static::getModel()::count() > 5 ? 'success' : 'warning';
+    }
     public static function form(Form $form): Form
     {
         return $form

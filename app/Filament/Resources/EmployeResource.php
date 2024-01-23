@@ -13,6 +13,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
@@ -33,6 +34,47 @@ class EmployeResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationGroup ="Entreprise Management";
     protected static ?int $navigationSort = 5;
+    protected static ?string $recordTitleAttribute ="nom";
+    public static function getGlobalSearchResultTitle(Model $record):string
+    {
+        return $record->nom.' '.$record->postnom;
+    }
+    public static function getGloballySearchableAttributes():array
+    {
+        return [
+            "nom",
+            "postnom",
+            "postes.lib"
+        ];
+    }
+    // public static function getGlobalSearchResultDetails(Model $record):array
+    // {
+    //     return [
+    //         "Poste"=>$record->postes->lib,
+    //     ];
+    // }
+    // public static function getGlobalSearchResultEloquentQuery(Model $record):Builder
+    // {
+    //     return parent::getGlobalSearchEloquentQuery()->with(['parenttable']);
+    // }
+    // public static function getGlobalSearchResultDetails(Model $record):array
+    // {
+    //     return [
+    //         "Poste"=>$record->postes->lib,
+    //     ];
+    // }
+    // public static function getGlobalSearchResultEloquentQuery(Model $record):Builder
+    // {
+    //     return parent::getGlobalSearchEloquentQuery()->with(['parenttable']);
+    // }
+    public static function getNavigationBadge():string
+    {
+        return static::getModel()::count();
+    }
+    public static function getNavigationBadgecolor():string|array|null
+    {
+        return static::getModel()::count() > 5 ? 'success' : 'warning';
+    }       
 
     public static function form(Form $form): Form
     {
