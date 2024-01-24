@@ -15,14 +15,7 @@ class Employe extends Model implements HasMedia
     use HasFactory;
     use InteractsWithMedia;
 
-    protected $fillable=[
-        "lib",
-        "nom",
-        "postnom",
-        "datenais",
-        "genre",
-        "photo"
-    ];
+    protected $guarded=[];
 
     public function postes()
     {
