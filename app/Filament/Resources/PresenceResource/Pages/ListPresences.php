@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\PresenceResource\Pages;
 
-use App\Filament\Resources\PresenceResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\PresenceResource;
+use Filament\Resources\Pages\ListRecords\Tab;
 
 class ListPresences extends ListRecords
 {
@@ -16,4 +17,13 @@ class ListPresences extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+    // public function getTabs():array
+    // {
+    //     return [
+    //         'Toute'=>Tab::make(),
+    //         "Aujourd'hui"=>Tab::make()
+    //         ->modifyQueryUsing(fn(Builder $query)=>$query->where("prensences.arrivee",now())),
+            
+    //     ];
+    // }
 }

@@ -268,12 +268,15 @@ class EmployeResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id'),
+                
                 ImageColumn::make("photo"),
                 TextColumn::make('nom')
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make('postnom')
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('prenom')
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make('genre')
@@ -282,6 +285,7 @@ class EmployeResource extends Resource
                     ->date("d/m/Y")
                     ->label("DateNaissance")
                     // ->format()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 // SpatieMediaLibraryImageColumn::make('photo'),
                 TextColumn::make('created_at')
@@ -298,9 +302,9 @@ class EmployeResource extends Resource
              
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ReplicateAction::make(),
+                // Tables\Actions\EditAction::make(),
+                // Tables\Actions\DeleteAction::make(),
+                // Tables\Actions\ReplicateAction::make()->color("info"),
                 Tables\Actions\Action::make(name: 'présent')
                 ->icon('heroicon-o-check')
                 ->color('success')
@@ -310,16 +314,17 @@ class EmployeResource extends Resource
                     if($check==null){
                         Presence::create([
                             'employe_id' => $employe->id,
-                            'date_debut' => now(),                       
+                            'arrivee' => now(),                       
+                            'BtnArrivee' => 1,                       
                         ]);
 
                         Notification::make()
-                        ->title('Présence signalée avec succès')
+                        ->title("Présence de l'employé(e) $employe->nom $employe->postnom signalée avec succès")
                         ->success()
                         ->send();
                     }else{
                         Notification::make()
-                        ->title('l\'employé est déjà présent(e)')
+                        ->title("l'employé $employe->nom $employe->postnom est déjà présent(e)")
                         ->warning()
                         ->send();
                     }
@@ -329,7 +334,16 @@ class EmployeResource extends Resource
                 ->color('danger')
                 ->icon('heroicon-o-x-mark')
                 ->action(function(Employe $employe){
-                    Presence::where('employe_id',$employe->id)->delete();
+                    // Presence::where('employe_id',$employe->id)->delete();
+                    Presence::create([
+                        'employe_id' => $employe->id,
+                        // 'arrivee' => now(),                       
+                        // 'BtnArrivee' => 1,                       
+                    ]);
+                    Notification::make()
+                    ->title("l'absence de l'employé $employe->nom $employe->postnom signalée avec succès")
+                    ->success()
+                    ->send();
                 }),
             ])
             ->bulkActions([
