@@ -26,8 +26,7 @@ class ListEmployes extends ListRecords
     //     return [
     //         'Tous'=>Tab::make(),
     //         "Liste de Présence"=>Tab::make()
-    //         ->modifyQueryUsing(fn(Builder $query)=>$query->join("presences","presences.employe_id","=","employes.id","right outer"))
-    //         // ->where("presences.employe_id",null)
+    //         ->modifyQueryUsing(fn(Builder $query)=>$query->rightjoin("presences","presences.employe_id","=","employes.id"))
             
     //     ];
     // }

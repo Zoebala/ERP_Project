@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Tables;
 use App\Models\Employe;
 use Filament\Forms\Get;
+use App\Models\Presence;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
@@ -19,6 +20,7 @@ use Filament\Forms\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -117,6 +119,7 @@ class EmployeResource extends Resource
                                             ->required()
                                             ->hidden(fn(Get $get):bool => !filled($get("prenom"))),
                                         DatePicker::make('datenais')
+                                            ->label("Date de naissance")
                                             ->hidden(fn(Get $get):bool => !filled($get("genre")))
                                             ->required(),
                                     ])->columnSpan(2),
@@ -265,6 +268,7 @@ class EmployeResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id'),
                 ImageColumn::make("photo"),
                 TextColumn::make('nom')
                     ->searchable()
@@ -296,6 +300,37 @@ class EmployeResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ReplicateAction::make(),
+                Tables\Actions\Action::make(name: 'présent')
+                ->icon('heroicon-o-check')
+                ->color('success')
+                ->action(function(Employe $employe){
+                    // dd($employe->id);
+                    $check=Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now())")->first();
+                    if($check==null){
+                        Presence::create([
+                            'employe_id' => $employe->id,
+                            'date_debut' => now(),                       
+                        ]);
+
+                        Notification::make()
+                        ->title('Présence signalée avec succès')
+                        ->success()
+                        ->send();
+                    }else{
+                        Notification::make()
+                        ->title('l\'employé est déjà présent(e)')
+                        ->warning()
+                        ->send();
+                    }
+                    
+                }),
+                Tables\Actions\Action::make(name: 'Absent')
+                ->color('danger')
+                ->icon('heroicon-o-x-mark')
+                ->action(function(Employe $employe){
+                    Presence::where('employe_id',$employe->id)->delete();
+                }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

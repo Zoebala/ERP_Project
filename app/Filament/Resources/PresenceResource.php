@@ -56,22 +56,22 @@ class PresenceResource extends Resource
                 TextColumn::make('employe.nom')
                     ->searchable()
                     ->sortable(),
-                ToggleColumn::make('BtnArrivee')
-                ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('arrivee')
-                    ->label("Heure Arrivée")
-                    ->dateTime("d/m/Y h:i:s")
-                    ->sortable(),
+                TextColumn::make('created_at')
+                        ->label("Heure Arrivée")
+                        ->dateTime("d/m/Y h:i:s")
+                        ->sortable()
+                        ->toggleable(),
+               
+                // TextColumn::make('arrivee')
+                //     ->label("Heure Arrivée")
+                //     ->dateTime("d/m/Y h:i:s")
+                //     ->sortable(),
                 ToggleColumn::make('BtnDepart')
                 ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('depart')
                 ->label("Heure Depart")
                     ->dateTime()
                     ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
