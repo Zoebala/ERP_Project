@@ -309,24 +309,29 @@ class EmployeResource extends Resource
                 ->icon('heroicon-o-check')
                 ->color('success')
                 ->action(function(Employe $employe){
-                    // dd($employe->id);
+                    
+                    //vérifie si l'employé existe déjà
                     $check=Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now())")->first();
+                    //vérifie si l'employé est absent(e)
+                    $check1=Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=0")->exists();
+                    // dd($check1);
+
                     if($check==null){
+                        
                         Presence::create([
                             'employe_id' => $employe->id,
                             'arrivee' => now(),                       
                             'BtnArrivee' => 1,  
-                             'status' => 'présent(e)',                         
+                            'status' => 'présent(e)',                         
                         ]);
 
                         Notification::make()
                         ->title("Présence de l'employé(e) $employe->nom $employe->postnom signalée avec succès")
                         ->success()
                         ->send();
-                    }else{
                         //on vérifie si l'employé n'a pas déjà été déclaré(e) comme absent(e)
-                        $check=Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=0")->exists();
-                        if($check){
+                    }elseif($check1){
+                       
                             Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=0")->delete();
                             Presence::create([
                                 'employe_id' => $employe->id,
@@ -339,14 +344,14 @@ class EmployeResource extends Resource
                             ->title("Présence de l'employé(e) $employe->nom $employe->postnom signalée avec succès")
                             ->success()
                             ->send();
-                        }else{
+                    }else{
 
                             Notification::make()
                             ->title("l'employé $employe->nom $employe->postnom est déjà présent(e)")
                             ->warning()
                             ->send();
-                        }
                     }
+                    
                     
                 }),
                 Tables\Actions\Action::make(name: 'Absent(e)')

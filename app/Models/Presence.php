@@ -13,7 +13,10 @@ class Presence extends Model
     protected $fillable=[
         "employe_id",
         "arrivee",
-        "depart"
+        "depart",
+        "status",
+        "BtnDepart",
+        "BtnArrivee",
 
     ];
 
