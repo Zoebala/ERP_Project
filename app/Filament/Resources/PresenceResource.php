@@ -67,23 +67,28 @@ class PresenceResource extends Resource
                 TextColumn::make('employe.prenom')
                     ->label("Prénom")
                     ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
-                TextColumn::make('created_at')
-                        ->label("Heure Arrivée")
-                        ->dateTime("d/m/Y H:i:s")
-                        ->sortable()
-                        ->toggleable(isToggledHiddenByDefault: true),
-               
-                TextColumn::make('arrivee')
+                    TextColumn::make('created_at')
+                    ->label("Heure Arrivée")
+                    ->dateTime("d/m/Y H:i:s")
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
+                    TextColumn::make('arrivee')
                     ->label("Date/Heure Arrivée")
                     ->dateTime("d/m/Y H:i:s")
                     ->sortable(),
-                ToggleColumn::make('BtnDepart')
-                ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('depart')
-                   ->label("Date/Heure Depart")
+                    ToggleColumn::make('BtnDepart')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    TextColumn::make('depart')
+                    ->label("Date/Heure Depart")
                     ->dateTime("d/m/Y H:i:s")
                     ->sortable(),
+                    TextColumn::make('status')
+                        // ->label("Prénom")
+                        ->searchable()
+                        ->sortable(),
                 // TextColumn::make('updated_at')
                 //   ->label("Heure Depart")
                 //     ->dateTime()
@@ -115,7 +120,7 @@ class PresenceResource extends Resource
                         ->send();
                     }else{
                         Notification::make()
-                        ->title('l\'employé(e) est déjà parti(e)')
+                        ->title("l'employé(e) est déjà parti(e)")
                         ->warning()
                         ->send();
                     }

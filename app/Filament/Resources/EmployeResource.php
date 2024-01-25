@@ -304,8 +304,8 @@ class EmployeResource extends Resource
             ->actions([
                 // Tables\Actions\EditAction::make(),
                 // Tables\Actions\DeleteAction::make(),
-                // Tables\Actions\ReplicateAction::make()->color("info"),
-                Tables\Actions\Action::make(name: 'présent')
+                Tables\Actions\ReplicateAction::make()->color("info"),
+                Tables\Actions\Action::make(name: 'présent(e)')
                 ->icon('heroicon-o-check')
                 ->color('success')
                 ->action(function(Employe $employe){
@@ -315,7 +315,8 @@ class EmployeResource extends Resource
                         Presence::create([
                             'employe_id' => $employe->id,
                             'arrivee' => now(),                       
-                            'BtnArrivee' => 1,                       
+                            'BtnArrivee' => 1,  
+                             'status' => 'présent(e)',                         
                         ]);
 
                         Notification::make()
@@ -323,27 +324,67 @@ class EmployeResource extends Resource
                         ->success()
                         ->send();
                     }else{
-                        Notification::make()
-                        ->title("l'employé $employe->nom $employe->postnom est déjà présent(e)")
-                        ->warning()
-                        ->send();
+                        //on vérifie si l'employé n'a pas déjà été déclaré(e) comme absent(e)
+                        $check=Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=0")->exists();
+                        if($check){
+                            Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=0")->delete();
+                            Presence::create([
+                                'employe_id' => $employe->id,
+                                'arrivee' => now(),                       
+                                'BtnArrivee' => 1,   
+                                'status' => 'présent(e)',                    
+                            ]);
+    
+                            Notification::make()
+                            ->title("Présence de l'employé(e) $employe->nom $employe->postnom signalée avec succès")
+                            ->success()
+                            ->send();
+                        }else{
+
+                            Notification::make()
+                            ->title("l'employé $employe->nom $employe->postnom est déjà présent(e)")
+                            ->warning()
+                            ->send();
+                        }
                     }
                     
                 }),
-                Tables\Actions\Action::make(name: 'Absent')
+                Tables\Actions\Action::make(name: 'Absent(e)')
                 ->color('danger')
                 ->icon('heroicon-o-x-mark')
                 ->action(function(Employe $employe){
-                    // Presence::where('employe_id',$employe->id)->delete();
-                    Presence::create([
-                        'employe_id' => $employe->id,
-                        // 'arrivee' => now(),                       
-                        // 'BtnArrivee' => 1,                       
-                    ]);
-                    Notification::make()
-                    ->title("l'absence de l'employé $employe->nom $employe->postnom signalée avec succès")
-                    ->success()
-                    ->send();
+                    //on vérifie si l'employé n'a pas déjà été déclarée comme présent(e)
+                    $check=Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=1")->exists();
+                    
+                    if($check){
+                        Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=1")->delete();
+                        Presence::create([
+                            'employe_id' => $employe->id,
+                            'arrivee'=>null,
+                            'depart'=>null,
+                            'status'=>'absent(e)',
+                            // 'arrivee' => now(),                       
+                            // 'BtnArrivee' => 0,                       
+                        ]);
+                        Notification::make()
+                        ->title("l'absence de l'employé $employe->nom $employe->postnom signalée avec succès")
+                        ->success()
+                        ->send();
+                        
+                    }else{
+                        //si le l'employé n'a pas encore été déjà déclaré(e) 
+                        Presence::create([
+                            'employe_id' => $employe->id,
+                            // 'arrivee' => now(),                       
+                            'BtnArrivee' => 0,  
+                            'status' =>"absent(e)",                     
+                        ]);
+                        Notification::make()
+                        ->title("l'absence de l'employé $employe->nom $employe->postnom signalée avec succès")
+                        ->success()
+                        ->send();
+                        
+                    }
                 }),
             ])
             ->bulkActions([
