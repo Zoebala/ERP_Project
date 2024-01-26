@@ -9,4 +9,13 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateDirection extends CreateRecord
 {
     protected static string $resource = DirectionResource::class;
+    protected function getCreatedNotificationTitle(): ? string
+    {
+        return "Enregistrement effectué avec succès!";
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('create');
+    }
 }

@@ -16,6 +16,7 @@ use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
+use Illuminate\Database\Query\Builder;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
@@ -25,7 +26,6 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\EmployeResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
@@ -298,7 +298,8 @@ class EmployeResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                // 
+               
              
             ])
             ->actions([
@@ -360,6 +361,8 @@ class EmployeResource extends Resource
                 ->action(function(Employe $employe){
                     //on vérifie si l'employé n'a pas déjà été déclarée comme présent(e)
                     $check=Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=1")->exists();
+                    //on vérifie  si l'employe n'a pas déjà été déclaré comme absent(e)
+                    $check2=Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=0")->exists();
                     
                     if($check){
                         Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=1")->delete();
@@ -375,8 +378,14 @@ class EmployeResource extends Resource
                         ->title("l'absence de l'employé $employe->nom $employe->postnom signalée avec succès")
                         ->success()
                         ->send();
-                        
-                    }else{
+                    //on vérifie si l'employé n'a pas déjà été déclaré(e) comme absent(e)  
+                    }elseif($check2){
+                        Notification::make()
+                        ->title("l'absence de l'employé(e) $employe->nom $employe->postnom a déjà été signalée")
+                        ->warning()
+                        ->send();
+                    }
+                    else{
                         //si le l'employé n'a pas encore été déjà déclaré(e) 
                         Presence::create([
                             'employe_id' => $employe->id,

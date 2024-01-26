@@ -8,6 +8,7 @@ use App\Models\Presence;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Resources\Components\Tab;
@@ -30,6 +31,14 @@ class PresenceResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
     protected static ?string $navigationGroup ="Entreprise Management";
     protected static ?int $navigationSort = 6;
+    public static function getNavigationBadge():string
+    {
+        return static::getModel()::whereRaw("Date(presences.created_at)=DATE(now())")->count();
+    }
+    public static function getNavigationBadgecolor():string|array|null
+    {
+        return static::getModel()::count() > 5 ? 'success' : 'warning';
+    }     
 
     public static function form(Form $form): Form
     {
@@ -87,6 +96,13 @@ class PresenceResource extends Resource
                     ->sortable(),
                     TextColumn::make('status')
                         // ->label("Prénom")
+                        ->badge()
+                        ->color(function(String $state){
+                            return match($state){
+                                "présent(e)"=>"info",
+                                "absent(e)"=>"warning",
+                            };                          
+                        })
                         ->searchable()
                         ->sortable(),
                 // TextColumn::make('updated_at')
@@ -97,6 +113,12 @@ class PresenceResource extends Resource
             ])
             ->filters([
                 //
+                Filter::make("Presence Aujourd'hui")
+                ->query(
+                    function ($query){
+                        return $query->whereRaw("Date(arrivee)=DATE(now())");
+                    }
+                )
                 
             ])
             ->actions([
@@ -106,9 +128,11 @@ class PresenceResource extends Resource
                 ->icon('heroicon-o-user')
                 ->color('info')
                 ->action(function(Presence $presence){
+                    //on vérifie si l'employé est déjà parti(e)
                     $check=Presence::whereRaw("id=$presence->id AND DATE(created_at)=DATE(now()) AND BtnDepart=1")->first();
                     
-                    // dd($check);
+                    //On vérifie si l'employé est absent(e)
+                    $check2=$check=Presence::whereRaw("id=$presence->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=0")->exists();;
                     if($check==null){
                         Presence::where("id",$presence->id)->update([
                             "depart"=> now(),
@@ -118,7 +142,13 @@ class PresenceResource extends Resource
                         ->title('Départ signalé avec succès')
                         ->success()
                         ->send();
-                    }else{
+                    }elseif($check2){
+                        Notification::make()
+                        ->title("Désolé, cet(te) employé(e) n'est pas venu(e) Aujourd'hui!")
+                        ->warning()
+                        ->send();
+                    }
+                    else{
                         Notification::make()
                         ->title("l'employé(e) est déjà parti(e)")
                         ->warning()
