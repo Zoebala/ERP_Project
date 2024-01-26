@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Employe;
+use App\Models\Direction;
 use App\Models\Departement;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,7 +15,8 @@ class Poste extends Model
     use HasFactory;
     protected $fillable=[
         "lib",
-        "departement_id"
+        "departement_id",
+        "direction_id"
     ];
 
     public function departement():BelongsTo
@@ -25,5 +27,10 @@ class Poste extends Model
     public function employes()
     {
         return $this->belongsToMany(Employe::class,"affectations")->withTimestamps();
+    }
+
+    public function direction():BelongsTo
+    {
+        return $this->belongsTo(Direction::class);
     }
 }

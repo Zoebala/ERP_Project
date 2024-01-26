@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Poste;
+use Filament\Forms\Get;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
@@ -43,12 +44,20 @@ class PosteResource extends Resource
                 ->aside()
                 ->icon("heroicon-o-book-open")
                 ->schema([
-
+                    Select::make('direction_id')
+                        ->relationship("direction","lib")
+                        ->label("Direction")
+                        ->live()
+                        ->hidden(fn(Get $get):bool => filled($get('departement_id')))
+                        ->preload(),
+                        // ->required(),
                     Select::make('departement_id')
                         ->relationship("Departement","lib")
+                        ->live()
+                        ->hidden(fn(Get $get):bool => filled($get('direction_id')))
                         ->label("Departement")
-                        ->preload()
-                        ->required(),
+                        ->preload(),
+                        // ->required(),
                     TextInput::make('lib')
                         ->label("Poste")
                         ->placeholder("Ex: Directeur")
@@ -62,6 +71,10 @@ class PosteResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('direction.lib')
+                    ->label("Direction")
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('departement.lib')
                     ->label("Departement")
                     ->searchable()

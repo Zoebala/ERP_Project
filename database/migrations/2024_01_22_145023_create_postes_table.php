@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('postes', function (Blueprint $table) {
             $table->id();
             $table->string("lib");
-            $table->unsignedBigInteger("departement_id");
+            $table->unsignedBigInteger("departement_id")->nullable();
+            $table->unsignedBigInteger("direction_id")->nullable();
             $table->timestamps();
         });
     }
