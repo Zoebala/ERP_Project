@@ -16,6 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\ToggleColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DateTimePicker;
@@ -118,7 +119,26 @@ class PresenceResource extends Resource
                     function ($query){
                         return $query->whereRaw("Date(arrivee)=DATE(now())");
                     }
-                )
+                ),
+                
+                 
+                Filter::make('created_at')
+                ->form([
+                    DatePicker::make('date_debut'),
+                    DatePicker::make('date_fin'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['date_debut'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['date_fin'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+                })
+                
                 
             ])
             ->actions([
