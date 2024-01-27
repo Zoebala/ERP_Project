@@ -79,11 +79,6 @@ class PresenceResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
-                    TextColumn::make('created_at')
-                    ->label("Heure Arrivée")
-                    ->dateTime("d/m/Y H:i:s")
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                     
                     TextColumn::make('arrivee')
                     ->label("Date/Heure Arrivée")
@@ -96,17 +91,22 @@ class PresenceResource extends Resource
                     ->dateTime("d/m/Y H:i:s")
                     ->sortable(),
                     TextColumn::make('status')
-                        // ->label("Prénom")
-                        ->badge()
-                        ->color(function(String $state){
-                            return match($state){
-                                "présent(e)"=>"info",
-                                "absent(e)"=>"warning",
-                            };                          
-                        })
-                        ->searchable()
-                        ->sortable(),
-                // TextColumn::make('updated_at')
+                    // ->label("Prénom")
+                    ->badge()
+                    ->color(function(String $state){
+                        return match($state){
+                            "présent(e)"=>"info",
+                            "absent(e)"=>"warning",
+                        };                          
+                    })
+                    ->searchable()
+                    ->sortable(),
+                    TextColumn::make('created_at')
+                    ->label("En date du")                   
+                    ->dateTime("d/m/Y")
+                    ->sortable()
+                    ->toggleable(),
+                    // TextColumn::make('updated_at')
                 //   ->label("Heure Depart")
                 //     ->dateTime()
                 //     ->sortable()

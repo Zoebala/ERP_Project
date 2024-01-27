@@ -305,7 +305,7 @@ class EmployeResource extends Resource
             ->actions([
                 // Tables\Actions\EditAction::make(),
                 // Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ReplicateAction::make()->color("info"),
+                // Tables\Actions\ReplicateAction::make()->color("info"),
                 Tables\Actions\Action::make(name: 'présent(e)')
                 ->icon('heroicon-o-check')
                 ->color('success')
