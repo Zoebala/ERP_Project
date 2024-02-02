@@ -17,6 +17,7 @@ class Presence extends Model
         "status",
         "BtnDepart",
         "BtnArrivee",
+        "Observation",
 
     ];
 

@@ -39,7 +39,7 @@ class PresenceResource extends Resource
     public static function getNavigationBadgecolor():string|array|null
     {
         return static::getModel()::count() > 5 ? 'success' : 'warning';
-    }     
+    }
 
     public static function form(Form $form): Form
     {
@@ -79,7 +79,7 @@ class PresenceResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
-                    
+
                     TextColumn::make('arrivee')
                     ->label("Date/Heure Arrivée")
                     ->dateTime("d/m/Y H:i:s")
@@ -97,14 +97,17 @@ class PresenceResource extends Resource
                         return match($state){
                             "présent(e)"=>"info",
                             "absent(e)"=>"warning",
-                        };                          
+                        };
                     })
                     ->searchable()
                     ->sortable(),
                     TextColumn::make('created_at')
-                    ->label("En date du")                   
+                    ->label("En date du")
                     ->dateTime("d/m/Y")
                     ->sortable()
+                    ->toggleable(),
+                    TextColumn::make('Observation')
+                    ->searchable()
                     ->toggleable(),
                     // TextColumn::make('updated_at')
                 //   ->label("Heure Depart")
@@ -120,8 +123,8 @@ class PresenceResource extends Resource
                         return $query->whereRaw("Date(arrivee)=DATE(now())");
                     }
                 ),
-                
-                 
+
+
                 Filter::make('created_at')
                 ->form([
                     DatePicker::make('date_debut'),
@@ -138,8 +141,8 @@ class PresenceResource extends Resource
                             fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                         );
                 })
-                
-                
+
+
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),
@@ -150,7 +153,7 @@ class PresenceResource extends Resource
                 ->action(function(Presence $presence){
                     //on vérifie si l'employé est déjà parti(e)
                     $check=Presence::whereRaw("id=$presence->id AND DATE(created_at)=DATE(now()) AND BtnDepart=1")->first();
-                    
+
                     //On vérifie si l'employé est absent(e)
                     $check2=$check=Presence::whereRaw("id=$presence->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=0")->exists();;
                     if($check==null){
@@ -159,6 +162,7 @@ class PresenceResource extends Resource
                             "BtnDepart"=> 1,
                         ]);
                         Notification::make()
+                        
                         ->title('Départ signalé avec succès')
                         ->success()
                         ->send();
@@ -174,7 +178,7 @@ class PresenceResource extends Resource
                         ->warning()
                         ->send();
                     }
-                        
+
                 }),
             ])
             ->bulkActions([
@@ -184,7 +188,7 @@ class PresenceResource extends Resource
             ]);
     }
 
- 
+
 
     public static function getRelations(): array
     {

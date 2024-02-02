@@ -19,6 +19,7 @@ return new class extends Migration
             $table->datetime("depart")->nullable();
             $table->string('status',15)->nullable();
             $table->unsignedBigInteger("employe_id");
+            $table->text("Observation")->nullable();
             $table->timestamps();
         });
     }

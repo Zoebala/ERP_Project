@@ -15,6 +15,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Section;
 use Illuminate\Database\Query\Builder;
 use Filament\Forms\Components\Tabs\Tab;
@@ -80,195 +81,196 @@ class EmployeResource extends Resource
     public static function getNavigationBadgecolor():string|array|null
     {
         return static::getModel()::count() > 5 ? 'success' : 'warning';
-    }       
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Tabs::make('Identification Employé')
-                        ->tabs([
-                            Tab::make('Info 1')
-                                ->schema([
-                                    // ...
-                                    Section::make("Nouvel Employé ?")
-                                    ->description("Ajouter un nouvel employé ici!")
-                                    ->icon('heroicon-o-user-plus')
-                                    ->schema([
-                    
-                                        TextInput::make('nom')
-                                            ->required()
-                                            ->live()
-                                            ->maxLength(255),
-                                        TextInput::make('postnom')
-                                            ->required()
-                                            ->live()
-                                            ->hidden(fn(Get $get):bool => !filled($get("nom")))
-                                            ->maxLength(255),
-                                        TextInput::make('prenom')
-                                            ->required()
-                                            ->live()
-                                            ->hidden(fn(Get $get):bool => !filled($get("postnom")))
-                                            ->maxLength(255),
-                                        Select::make('genre')
-                                            ->live()
-                                            ->options([
-                                                "F"=>"F",
-                                                "M"=>"M"
-                                            ])
-                                            ->required()
-                                            ->hidden(fn(Get $get):bool => !filled($get("prenom"))),
-                                        DatePicker::make('datenais')
-                                            ->label("Date de naissance")
-                                            ->hidden(fn(Get $get):bool => !filled($get("genre")))
-                                            ->required(),
-                                    ])->columnSpan(2),
-                                    Section::make("Votre Profil")
-                                    ->icon("heroicon-o-camera")
-                                    ->description("Uploader votre profil ici!")
-                                    ->schema([
-                                        // SpatieMediaLibraryFileUpload::make("photo"),
-                                        FileUpload::make("photo")->disk("public")->directory("photos"),
-                                    ])->columnSpan(1),
-                            ]),
-                           
-                            Tab::make('Info 2')
-                                ->schema([
+                Wizard::make([
+
+                    Wizard\Step::make('Info 1')
+                        ->schema([
+                            // ...
+                            Section::make("Nouvel Employé ?")
+                            ->description("Ajouter un nouvel employé ici!")
+                            ->icon('heroicon-o-user-plus')
+                            ->schema([
+
+                                TextInput::make('nom')
+                                    ->required()
+                                    ->live()
+                                    ->maxLength(255),
+                                TextInput::make('postnom')
+                                    ->required()
+                                    ->live()
+                                    ->hidden(fn(Get $get):bool => !filled($get("nom")))
+                                    ->maxLength(255),
+                                TextInput::make('prenom')
+                                    ->required()
+                                    ->live()
+                                    ->hidden(fn(Get $get):bool => !filled($get("postnom")))
+                                    ->maxLength(255),
+                                Select::make('genre')
+                                    ->live()
+                                    ->options([
+                                        "F"=>"F",
+                                        "M"=>"M"
+                                    ])
+                                    ->required()
+                                    ->hidden(fn(Get $get):bool => !filled($get("prenom"))),
+                                DatePicker::make('datenais')
+                                    ->label("Date de naissance")
+                                    ->hidden(fn(Get $get):bool => !filled($get("genre")))
+                                    ->required(),
+                            ])->columnSpan(2),
+                            Section::make("Votre Profil")
+                            ->icon("heroicon-o-camera")
+                            ->description("Uploader votre profil ici!")
+                            ->schema([
+                                // SpatieMediaLibraryFileUpload::make("photo"),
+                                FileUpload::make("photo")->disk("public")->directory("photos"),
+                            ])->columnSpan(1),
+                    ]),
+
+                    Wizard\Step::make('Info 2')
+                        ->schema([
+                            Section::make()
+                            ->schema([
+
+                                TextInput::make('phone')
+                                    ->label("Telephone")
+                                    ->tel()
+                                    ->placeholder('Ex : 089XXXXXXX')
+                                    ->maxLength(10),
+                                TextInput::make('email')
+                                    ->placeHolder('Ex: toto@example.com')
+                                    ->email(),
+                                TextInput::make('lieu_naissance')
+                                    ->placeholder('Ex: Mbanza-Ngungu')
+                                    ->maxLength(255),
+                                TextInput::make('pays_naissance')
+                                    ->placeholder('Ex: Nigeria')
+                                    ->maxLength(255),
+                                Select::make('situation_familiale')
+                                    ->options([
+                                    "Marié(e)"=>"Marié(e)",
+                                    "Célibataire"=>"Célibataire",
+                                    "Divorcé(e)"=>"Divorcé(e)",
+                                    "Veuf(ve)"=>"Veuf(ve)",
+                                ]),
+                               TextInput::make('Nbre_Enfant')
+                                    ->placeholder('Ex: 2'),
+                               TextInput::make('adresse')
+                                    ->placeholder('Ex: 45, Av. mweneditu Q/Disengomoka')
+                                    ->maxLength(255)
+                                    ->columnSpanFull(),
+                            ])->columns(2),
+                    ]),
+                    Wizard\Step::make('info 3')
+                            ->schema([
+                               Group::make()
+                               ->schema([
                                     Section::make()
                                     ->schema([
 
-                                        TextInput::make('phone')
-                                            ->label("Telephone")
-                                            ->tel()
-                                            ->placeholder('Ex : 089XXXXXXX')
-                                            ->maxLength(10),
-                                        TextInput::make('email')
-                                            ->placeHolder('Ex: toto@example.com')
-                                            ->email(),                                                    
-                                        TextInput::make('lieu_naissance')
-                                            ->placeholder('Ex: Mbanza-Ngungu')
-                                            ->maxLength(255),
-                                        TextInput::make('pays_naissance')
-                                            ->placeholder('Ex: Nigeria')
-                                            ->maxLength(255),
-                                        Select::make('situation_familiale')
-                                            ->options([
-                                            "Marié(e)"=>"Marié(e)",
-                                            "Célibataire"=>"Célibataire",
-                                            "Divorcé(e)"=>"Divorcé(e)",
-                                            "Veuf(ve)"=>"Veuf(ve)",
-                                        ]),
-                                       TextInput::make('Nbre_Enfant')
-                                            ->placeholder('Ex: 2'),
-                                       TextInput::make('adresse')
-                                            ->placeholder('Ex: 45, Av. mweneditu Q/Disengomoka')
-                                            ->maxLength(255)
-                                            ->columnSpanFull(),
-                                    ])->columns(2),
-                            ]),
-                            Tab::make('info 3')
-                                    ->schema([
-                                       Group::make()
-                                       ->schema([
-                                            Section::make()
-                                            ->schema([
+                                        Select::make('position')
+                                         ->options([
+                                             "En activité"=>"En activité",
+                                             "En congé"=>"En congé",
+                                             "En suspension"=>"En suspension"
+                                         ]),
+                                         DatePicker::make("date_embauche"),
+                                         Select::make('province')
+                                          ->options([
+                                              "kongo Central"=>"kongo Central",
+                                              "kinshasa"=>"kinshasa",
+                                              "haut-Katanga"=>"haut-Katanga",
+                                              "lualaba"=>"lualaba",
+                                              "haut-lomani"=>"haut-lomani",
+                                              "kolwezi"=>"kolwezi",
+                                              "mai-ndombe"=>"mai-ndombe",
+                                              "kwilu"=>"kwilu",
+                                              "tshopo"=>"tshopo",
+                                              "tshuapa"=>"tshuapa",
+                                              "ituri"=>"ituri",
+                                              "sankuru"=>"sankuru",
+                                              "sud-ubangi"=>"sud-ubangi",
+                                              "nord-ubangi"=>"nord-ubangi",
+                                              "sud-kivu"=>"sud-kivu",
+                                              "nord-kivu"=>"sud-kivu",
+                                              "bas-uélé"=>"bas-uélé",
+                                              "haut-uélé"=>"haut-uélé",
+                                              "kasaï"=>"kasaï",
+                                              "kasaï-central"=>"kasaï-central",
+                                              "kasaï-oriental"=>"kasaï-oriental",
+                                              "kwango"=>"kwango",
+                                              "lomani"=>"lomani",
+                                              "maniema"=>"maniema",
+                                              "mongala"=>"mongala",
+                                              "tanganyika"=>"tanganyika",
+                                              "équateur"=>"équateur",
 
-                                                Select::make('position')
-                                                 ->options([
-                                                     "En activité"=>"En activité",
-                                                     "En congé"=>"En congé",
-                                                     "En suspension"=>"En suspension"
-                                                 ]),
-                                                 DatePicker::make("date_embauche"),
-                                                 Select::make('province')
-                                                  ->options([
-                                                      "kongo Central"=>"kongo Central",
-                                                      "kinshasa"=>"kinshasa",
-                                                      "haut-Katanga"=>"haut-Katanga",
-                                                      "lualaba"=>"lualaba",
-                                                      "haut-lomani"=>"haut-lomani",
-                                                      "kolwezi"=>"kolwezi",
-                                                      "mai-ndombe"=>"mai-ndombe",
-                                                      "kwilu"=>"kwilu",
-                                                      "tshopo"=>"tshopo",
-                                                      "tshuapa"=>"tshuapa",
-                                                      "ituri"=>"ituri",
-                                                      "sankuru"=>"sankuru",
-                                                      "sud-ubangi"=>"sud-ubangi",
-                                                      "nord-ubangi"=>"nord-ubangi",
-                                                      "sud-kivu"=>"sud-kivu",
-                                                      "nord-kivu"=>"sud-kivu",
-                                                      "bas-uélé"=>"bas-uélé",
-                                                      "haut-uélé"=>"haut-uélé",
-                                                      "kasaï"=>"kasaï",
-                                                      "kasaï-central"=>"kasaï-central",
-                                                      "kasaï-oriental"=>"kasaï-oriental",
-                                                      "kwango"=>"kwango",
-                                                      "lomani"=>"lomani",
-                                                      "maniema"=>"maniema",
-                                                      "mongala"=>"mongala",
-                                                      "tanganyika"=>"tanganyika",
-                                                      "équateur"=>"équateur",
-         
-                                                  ]),
-                                                 Select::make('structure')
-                                                  ->options([
-                                                     "systematik"=>"systematik",
-                                                     "quisine"=>"quisine",
-                                                  ]),
-                                                 Select::make('qualification')
-                                                  ->options([
-                                                     "gradué(e)"=>"gradué(e)",
-                                                     "licencié(e)"=>"licencié(e)",
-                                                     "Master"=>"Master",
-                                                  ]),
-                                                  Section::make()
-                                                  ->description("Avez vous une rémunération ?")
-                                                  ->schema([
-                                                      Toggle::make('remuneration')
-                                                      ->label('Rémunération')
-                                                      ->live(),
-                                                      TextInput::make('montantrem')
-                                                      ->label('Montant rémuneration')
-                                                      ->placeholder('Ex: 100000')
-                                                      ->hidden(fn(Get $get):bool => $get('remuneration')==false)
-                                                      ->integer()
-                                                      ->minValue(0)
-                                                      ->maxValue(100000000),
-                                                  ])->columnSpan(1),
-                                            ])->columnSpanFull()->columns(2),
-                                       ])->columnSpanFull(),
-                                         
-                                                        
-                            ])->columns(2),
-                            Tab::make("info 4")
-                                ->schema([
-                                    TextInput::make("formation_suivie")
-                                    ->placeholder('Ex: Marketing'),
-                                    TextInput::make("institution_obt_diplome")
-                                    ->placeholder('Ex: ISP_Mbanza-Ngungu'),
-                                    TextInput::make("annee_obt_diplome")
-                                    ->label("Annee obtention diplôme")
-                                    ->placeholder('Ex: 2023-2024')
-                                    ->maxLength(9),
-                                    TextInput::make("lieu_obt_diplome")
-                                    ->label('Lieu Obtention diplôme')
-                                    ->placeholder('Ex: Mbanza-Ngungu'),
-                                    TextInput::make("pays_obt_diplome")
-                                    ->label('Pays obtention diplôme')
-                                    ->columnSpanFull()
-                                    ->placeholder('Ex: RDC'),                                   
-                                    
-                            ])->columns(2),
-                        ])->columnSpanFull()->columns(3),
-            ])->columns(3);
+                                          ]),
+                                         Select::make('structure')
+                                          ->options([
+                                             "systematik"=>"systematik",
+                                             "quisine"=>"quisine",
+                                          ]),
+                                         Select::make('qualification')
+                                          ->options([
+                                             "gradué(e)"=>"gradué(e)",
+                                             "licencié(e)"=>"licencié(e)",
+                                             "Master"=>"Master",
+                                          ]),
+                                          Section::make()
+                                          ->description("Avez vous une rémunération ?")
+                                          ->schema([
+                                              Toggle::make('remuneration')
+                                              ->label('Rémunération')
+                                              ->live(),
+                                              TextInput::make('montantrem')
+                                              ->label('Montant rémuneration')
+                                              ->placeholder('Ex: 100000')
+                                              ->hidden(fn(Get $get):bool => $get('remuneration')==false)
+                                              ->integer()
+                                              ->minValue(0)
+                                              ->maxValue(100000000),
+                                          ])->columnSpan(1),
+                                    ])->columnSpanFull()->columns(2),
+                               ])->columnSpanFull(),
+
+
+                    ])->columns(2),
+                    Wizard\Step::make("info 4")
+                        ->schema([
+                            TextInput::make("formation_suivie")
+                            ->placeholder('Ex: Marketing'),
+                            TextInput::make("institution_obt_diplome")
+                            ->placeholder('Ex: ISP_Mbanza-Ngungu'),
+                            TextInput::make("annee_obt_diplome")
+                            ->label("Annee obtention diplôme")
+                            ->placeholder('Ex: 2023-2024')
+                            ->maxLength(9),
+                            TextInput::make("lieu_obt_diplome")
+                            ->label('Lieu Obtention diplôme')
+                            ->placeholder('Ex: Mbanza-Ngungu'),
+                            TextInput::make("pays_obt_diplome")
+                            ->label('Pays obtention diplôme')
+                            ->columnSpanFull()
+                            ->placeholder('Ex: RDC'),
+
+                    ])->columns(2),
+                ])->columns(3)->columnSpanFull(),
+
+            ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                
+
                 ImageColumn::make("photo"),
                 TextColumn::make('nom')
                     ->searchable()
@@ -279,6 +281,7 @@ class EmployeResource extends Resource
                 TextColumn::make('prenom')
                     ->searchable()
                     ->toggleable(),
+
                 TextColumn::make('genre')
                     ->searchable(),
                 TextColumn::make('datenais')
@@ -298,9 +301,9 @@ class EmployeResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                // 
-               
-             
+                //
+
+
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),
@@ -310,7 +313,7 @@ class EmployeResource extends Resource
                 ->icon('heroicon-o-check')
                 ->color('success')
                 ->action(function(Employe $employe){
-                    
+
                     //vérifie si l'employé existe déjà
                     $check=Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now())")->first();
                     //vérifie si l'employé est absent(e)
@@ -318,12 +321,12 @@ class EmployeResource extends Resource
                     // dd($check1);
 
                     if($check==null){
-                        
+
                         Presence::create([
                             'employe_id' => $employe->id,
-                            'arrivee' => now(),                       
-                            'BtnArrivee' => 1,  
-                            'status' => 'présent(e)',                         
+                            'arrivee' => now(),
+                            'BtnArrivee' => 1,
+                            'status' => 'présent(e)',
                         ]);
 
                         Notification::make()
@@ -332,15 +335,15 @@ class EmployeResource extends Resource
                         ->send();
                         //on vérifie si l'employé n'a pas déjà été déclaré(e) comme absent(e)
                     }elseif($check1){
-                       
+
                             Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=0")->delete();
                             Presence::create([
                                 'employe_id' => $employe->id,
-                                'arrivee' => now(),                       
-                                'BtnArrivee' => 1,   
-                                'status' => 'présent(e)',                    
+                                'arrivee' => now(),
+                                'BtnArrivee' => 1,
+                                'status' => 'présent(e)',
                             ]);
-    
+
                             Notification::make()
                             ->title("Présence de l'employé(e) $employe->nom $employe->postnom signalée avec succès")
                             ->success()
@@ -352,18 +355,33 @@ class EmployeResource extends Resource
                             ->warning()
                             ->send();
                     }
-                    
-                    
+
+
                 }),
                 Tables\Actions\Action::make(name: 'Absent(e)')
                 ->color('danger')
                 ->icon('heroicon-o-x-mark')
-                ->action(function(Employe $employe){
+                ->form([
+                    TextInput::make("Observation")
+                    ->label("Indiquez la raison de votre absence")
+                    ->maxLength("25")
+                    ->datalist(
+                        [
+
+                            "malade" =>"malade",
+                            "en vancances"=>"en vancances",
+                            "empêché " =>"empêché",
+                        ]
+                    )
+
+                ])
+                ->action(function(Employe $employe, array $data){
+
                     //on vérifie si l'employé n'a pas déjà été déclarée comme présent(e)
                     $check=Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=1")->exists();
-                    //on vérifie  si l'employe n'a pas déjà été déclaré comme absent(e)
+                    // on vérifie  si l'employe n'a pas déjà été déclaré comme absent(e)
                     $check2=Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=0")->exists();
-                    
+
                     if($check){
                         Presence::whereRaw("employe_id=$employe->id AND DATE(created_at)=DATE(now()) AND BtnArrivee=1")->delete();
                         Presence::create([
@@ -371,14 +389,16 @@ class EmployeResource extends Resource
                             'arrivee'=>null,
                             'depart'=>null,
                             'status'=>'absent(e)',
-                            // 'arrivee' => now(),                       
-                            // 'BtnArrivee' => 0,                       
+                            'Observation' => $data["Observation"],
+                            'BtnArrivee' => 0,
                         ]);
+
                         Notification::make()
                         ->title("l'absence de l'employé $employe->nom $employe->postnom signalée avec succès")
+                        ->successRedirectUrl("presences.list")
                         ->success()
                         ->send();
-                    //on vérifie si l'employé n'a pas déjà été déclaré(e) comme absent(e)  
+                    //on vérifie si l'employé n'a pas déjà été déclaré(e) comme absent(e)
                     }elseif($check2){
                         Notification::make()
                         ->title("l'absence de l'employé(e) $employe->nom $employe->postnom a déjà été signalée")
@@ -386,20 +406,22 @@ class EmployeResource extends Resource
                         ->send();
                     }
                     else{
-                        //si le l'employé n'a pas encore été déjà déclaré(e) 
+                        //si le l'employé n'a pas encore été déjà déclaré(e)
                         Presence::create([
                             'employe_id' => $employe->id,
-                            // 'arrivee' => now(),                       
-                            'BtnArrivee' => 0,  
-                            'status' =>"absent(e)",                     
+                            'Observation' => $data["Observation"],
+                            'BtnArrivee' => 0,
+                            'status' =>"absent(e)",
                         ]);
                         Notification::make()
                         ->title("l'absence de l'employé $employe->nom $employe->postnom signalée avec succès")
                         ->success()
                         ->send();
-                        
+
                     }
+
                 }),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -424,6 +446,6 @@ class EmployeResource extends Resource
             'edit' => Pages\EditEmploye::route('/{record}/edit'),
         ];
     }
-     
-   
+
+
 }
