@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Group;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
@@ -365,6 +366,8 @@ class EmployeResource extends Resource
                     TextInput::make("Observation")
                     ->label("Indiquez la raison de votre absence")
                     ->maxLength("25")
+
+                    ->required()
                     ->datalist(
                         [
 
@@ -420,7 +423,9 @@ class EmployeResource extends Resource
 
                     }
 
-                }),
+                })
+                ->modalWidth(MaxWidth::Medium)
+                ->modalIcon("heroicon-o-chat-bubble-left") ,
 
             ])
             ->bulkActions([
