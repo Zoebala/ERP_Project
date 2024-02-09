@@ -162,7 +162,7 @@ class PresenceResource extends Resource
                             "BtnDepart"=> 1,
                         ]);
                         Notification::make()
-                        
+
                         ->title('Départ signalé avec succès')
                         ->success()
                         ->send();

@@ -398,7 +398,7 @@ class EmployeResource extends Resource
 
                         Notification::make()
                         ->title("l'absence de l'employé $employe->nom $employe->postnom signalée avec succès")
-                        ->successRedirectUrl("presences.list")
+                        // ->successRedirectUrl("presences.list")
                         ->success()
                         ->send();
                     //on vérifie si l'employé n'a pas déjà été déclaré(e) comme absent(e)
